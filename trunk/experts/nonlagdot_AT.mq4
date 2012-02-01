@@ -8,8 +8,14 @@
 extern double Lots               = 0.1;
 extern double MaximumRisk        = 0.02;
 extern double DecreaseFactor     = 3;
+//input parameters for custom indicator nonlagdat.ex4
+extern int     Price          = 0;
 extern int     Length         = 60;
+extern int     Displace       = 0;
 extern int     Filter         = 5;
+extern int     Color          = 1;
+extern int     ColorBarBack   = 0;
+extern double  Deviation      = 0;    
 //+------------------------------------------------------------------+
 //| Calculate open positions                                         |
 //+------------------------------------------------------------------+
@@ -67,8 +73,9 @@ void CheckForOpen()
 //---- go trading only for first tiks of new bar
 //   if(Volume[0]>1) return;
 //---- get Moving Average 
-   trend_shift1=iCustom(NULL,0,"nonlagdot",QQE_SF,QQE_RSI_Period,QQE_DARFACTOR,0,i+1);
-   ma=iMA(NULL,0,MovingPeriod,MovingShift,MODE_SMA,PRICE_CLOSE,0);
+   trend_shift1=iCustom(NULL,0,"nonlagdot",Price,Length,Displace,Filter,Color,ColorBarBack,Deviation,1,i+1);
+   trend_shift2=iCustom(NULL,0,"nonlagdot",Price,Length,Displace,Filter,Color,ColorBarBack,Deviation,2,i+1);
+
 //---- sell conditions
    if(Open[1]>ma && Close[1]<ma)  
      {
