@@ -16,6 +16,9 @@ extern int     Filter         = 5;
 extern int     Color          = 1;
 extern int     ColorBarBack   = 0;
 extern double  Deviation      = 0;    
+
+bool       bEntry=False;
+double      Cycle =  4;
 //+------------------------------------------------------------------+
 //| Calculate open positions                                         |
 //+------------------------------------------------------------------+
@@ -73,6 +76,7 @@ void CheckForOpen()
    
    int    i,shift, counted_bars=IndicatorCounted(),limit;
    double alfa, beta, t, Sum, Weight, step,g;
+   double pi = 3.1415926535;
 
    double Coeff =  3*pi;
    int Phase = Length-1;
@@ -91,50 +95,49 @@ void CheckForOpen()
       trend_shift1=iCustom(NULL,0,"nonlagdot",Price,Length,Displace,Filter,Color,ColorBarBack,Deviation,1,i+1);
       trend_shift2=iCustom(NULL,0,"nonlagdot",Price,Length,Displace,Filter,Color,ColorBarBack,Deviation,2,i+2);
       
-      if( trend_shift2<0 && trend_shift1>0 && Volume[0]>1 && !UpTrendAlert)
+      if( trend_shift2<0 && trend_shift1>0 )
       {
 	     //   Message = " "+Symbol()+" M"+Period()+": Signal for BUY";
 	     //   if ( SoundAlertMode>0 ) Alert (Message); 
         //	 UpTrendAlert=true; DownTrendAlert=false;
-         res=OrderSend(Symbol(),OP_BUY,LotsOptimized(),Ask,3,0,0,"",MAGICMA,0,Blue);
+         for(i=0;i<OrdersTotal();i++)
+         {
+            if(OrderSelect(i,SELECT_BY_POS,MODE_TRADES)==false)        break;
+            if(OrderMagicNumber()!=MAGICMA || OrderSymbol()!=Symbol()) continue;
+    
+         }
+         if(bEntry&&(OrderType()==OP_SELL))
+         {
+            OrderClose(OrderTicket(),OrderLots(),Bid,3,White);
+         }
+         res=OrderSend(Symbol(),OP_BUY,1,Ask,3,0,0,"",MAGICMA,0,Blue);
+         bEntry=true;
          return;
 	   } 
 	   
-      if( trend_shift2>0 && trend_shift1<0 && Volume[0]>1 && !DownTrendAlert)
+      if( trend_shift2>0 && trend_shift1<0 )
       {
-         res=OrderSend(Symbol(),OP_SELL,LotsOptimized(),Bid,3,0,0,"",MAGICMA,0,Red);
+         for( i=0;i<OrdersTotal();i++)
+         {
+            if(OrderSelect(i,SELECT_BY_POS,MODE_TRADES)==false)        break;
+            if(OrderMagicNumber()!=MAGICMA || OrderSymbol()!=Symbol()) continue;
+         }
+            
+         if(bEntry&&(OrderType()==OP_BUY))
+         {
+            OrderClose(OrderTicket(),OrderLots(),Bid,3,White);
+         }
+            
+         res=OrderSend(Symbol(),OP_SELL,1,Bid,3,0,0,"",MAGICMA,0,Red);
+         bEntry=true;
          return;
       } 	         
-  }
+   }
+}
 //+------------------------------------------------------------------+
 //| Check for close order conditions                                 |
 //+------------------------------------------------------------------+
-void CheckForClose()
-  {
-   double ma;
-//---- go trading only for first tiks of new bar
-   if(Volume[0]>1) return;
-//---- get Moving Average 
-   ma=iMA(NULL,0,MovingPeriod,MovingShift,MODE_SMA,PRICE_CLOSE,0);
-//----
-   for(int i=0;i<OrdersTotal();i++)
-     {
-      if(OrderSelect(i,SELECT_BY_POS,MODE_TRADES)==false)        break;
-      if(OrderMagicNumber()!=MAGICMA || OrderSymbol()!=Symbol()) continue;
-      //---- check order type 
-      if(OrderType()==OP_BUY)
-        {
-         if(Open[1]>ma && Close[1]<ma) OrderClose(OrderTicket(),OrderLots(),Bid,3,White);
-         break;
-        }
-      if(OrderType()==OP_SELL)
-        {
-         if(Open[1]<ma && Close[1]>ma) OrderClose(OrderTicket(),OrderLots(),Ask,3,White);
-         break;
-        }
-     }
-//----
-  }
+
 //+------------------------------------------------------------------+
 //| Start function                                                   |
 //+------------------------------------------------------------------+
@@ -143,8 +146,9 @@ void start()
 //---- check for history and trading
    if(Bars<100 || IsTradeAllowed()==false) return;
 //---- calculate open orders by current symbol
-   if(CalculateCurrentOrders(Symbol())==0) CheckForOpen();
-   else                                    CheckForClose();
-//----
+ //  if(CalculateCurrentOrders(Symbol())==0) 
+   CheckForOpen();
+ 
+
   }
 //+------------------------------------------------------------------+
