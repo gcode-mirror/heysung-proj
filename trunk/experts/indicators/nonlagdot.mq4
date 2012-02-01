@@ -123,7 +123,7 @@ int start()
    
       if (Filter>0)
       {
-      if( MathAbs(MABuffer[shift]-MABuffer[shift+1]) < Filter*Point ) MABuffer[shift]=MABuffer[shift+1];
+         if( MathAbs(MABuffer[shift]-MABuffer[shift+1]) < Filter*Point ) MABuffer[shift]=MABuffer[shift+1];
       }
       
       if (Color>0)
