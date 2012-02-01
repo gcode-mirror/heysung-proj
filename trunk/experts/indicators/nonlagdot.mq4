@@ -20,11 +20,11 @@
 
 //---- input parameters
 extern int     Price          = 0;
-extern int     Length         = 10;
+extern int     Length         = 60;
 extern int     Displace       = 0;
-extern int     Filter         = 0;
+extern int     Filter         = 5;
 extern int     Color          = 1;
-extern int     ColorBarBack   = 2;
+extern int     ColorBarBack   = 0;
 extern double  Deviation      = 0;         
 
 double Cycle =  4;
