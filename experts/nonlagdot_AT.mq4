@@ -70,25 +70,41 @@ void CheckForOpen()
   {
    double trend_shift1,trend_shift2;
    int    res;
-//---- go trading only for first tiks of new bar
-//   if(Volume[0]>1) return;
-//---- get Moving Average 
-   trend_shift1=iCustom(NULL,0,"nonlagdot",Price,Length,Displace,Filter,Color,ColorBarBack,Deviation,1,i+1);
-   trend_shift2=iCustom(NULL,0,"nonlagdot",Price,Length,Displace,Filter,Color,ColorBarBack,Deviation,2,i+1);
+   
+   int    i,shift, counted_bars=IndicatorCounted(),limit;
+   double alfa, beta, t, Sum, Weight, step,g;
 
-//---- sell conditions
-   if(Open[1]>ma && Close[1]<ma)  
-     {
-      res=OrderSend(Symbol(),OP_SELL,LotsOptimized(),Bid,3,0,0,"",MAGICMA,0,Red);
-      return;
-     }
-//---- buy conditions
-   if(Open[1]<ma && Close[1]>ma)  
-     {
-      res=OrderSend(Symbol(),OP_BUY,LotsOptimized(),Ask,3,0,0,"",MAGICMA,0,Blue);
-      return;
-     }
-//----
+   double Coeff =  3*pi;
+   int Phase = Length-1;
+   double Len = Length*Cycle + Phase;  
+   
+   if ( counted_bars > 0 )  limit=Bars-counted_bars;
+   if ( counted_bars < 0 )  return(0);
+   if ( counted_bars ==0 )  limit=Bars-Len-1; 
+   if ( counted_bars < 1 ) 
+   {
+  
+   }
+   
+   for(shift=limit;shift>=0;shift--) 
+   {	
+      trend_shift1=iCustom(NULL,0,"nonlagdot",Price,Length,Displace,Filter,Color,ColorBarBack,Deviation,1,i+1);
+      trend_shift2=iCustom(NULL,0,"nonlagdot",Price,Length,Displace,Filter,Color,ColorBarBack,Deviation,2,i+2);
+      
+      if( trend_shift2<0 && trend_shift1>0 && Volume[0]>1 && !UpTrendAlert)
+      {
+	     //   Message = " "+Symbol()+" M"+Period()+": Signal for BUY";
+	     //   if ( SoundAlertMode>0 ) Alert (Message); 
+        //	 UpTrendAlert=true; DownTrendAlert=false;
+         res=OrderSend(Symbol(),OP_BUY,LotsOptimized(),Ask,3,0,0,"",MAGICMA,0,Blue);
+         return;
+	   } 
+	   
+      if( trend_shift2>0 && trend_shift1<0 && Volume[0]>1 && !DownTrendAlert)
+      {
+         res=OrderSend(Symbol(),OP_SELL,LotsOptimized(),Bid,3,0,0,"",MAGICMA,0,Red);
+         return;
+      } 	         
   }
 //+------------------------------------------------------------------+
 //| Check for close order conditions                                 |
