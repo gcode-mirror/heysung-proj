@@ -62,11 +62,12 @@ double LotsOptimized()
 //+------------------------------------------------------------------+
 void CheckForOpen()
   {
-   double ma;
+   double trend_shift1,trend_shift2;
    int    res;
 //---- go trading only for first tiks of new bar
-   if(Volume[0]>1) return;
+//   if(Volume[0]>1) return;
 //---- get Moving Average 
+   trend_shift1=iCustom(NULL,0,"nonlagdot",QQE_SF,QQE_RSI_Period,QQE_DARFACTOR,0,i+1);
    ma=iMA(NULL,0,MovingPeriod,MovingShift,MODE_SMA,PRICE_CLOSE,0);
 //---- sell conditions
    if(Open[1]>ma && Close[1]<ma)  
