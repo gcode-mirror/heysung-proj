@@ -102,7 +102,7 @@ int start()
    
    for(shift=limit;shift>=0;shift--) 
    {	
-   Weight=0; Sum=0; t=0;
+      Weight=0; Sum=0; t=0;
        
       for (i=0;i<=Len-1;i++)
 	   { 
