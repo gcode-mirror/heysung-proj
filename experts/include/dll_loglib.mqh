@@ -1,10 +1,16 @@
-#import "ExpertSample.dll"
+#import "DLL_loglib.dll"
 
-typedef enum {FATAL_HEY,ERROR_HEY, WARN_HEY,INFO_HEY,DEBUG_HEY}LogLevel;
-typedef enum {LOG2STDOUT,LOG2FILE,ALL}LOGOUT;
+#define		FATAL_HEY		1
+#define		ERROR_HEY		2
+#define		WARN_HEY		3
+#define		INFO_HEY		4
+#define		DEBUG_HEY		5
 
-void  log_file(char * dbg_buf);
-void Dbgout(LOGOUT logout,LogLevel level,char * fmt, ...);
-void  init_log(LogLevel  level,LOGOUT logout);
+#define		LOG2STDOUT		1
+#define		LOG2FILE		2
+#define		ALL				3
 
 
+void   log_file(string dbg_buf);
+void   Dbgout(int logout,int level,string  fmt, ...);
+void   init_log(int  level,int logout);

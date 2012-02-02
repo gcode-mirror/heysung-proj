@@ -9,6 +9,7 @@ extern double Lots               = 0.1;
 extern double MaximumRisk        = 0.02;
 extern double DecreaseFactor     = 3;
 //input parameters for custom indicator nonlagdat.ex4
+extern int     CountBars      =158;
 extern int     Price          = 0;
 extern int     Length         = 60;
 extern int     Displace       = 0;
@@ -82,6 +83,8 @@ void CheckForOpen()
    int Phase = Length-1;
    double Len = Length*Cycle + Phase;  
    
+   if (CountBars>=158) CountBars=158;
+   
    if ( counted_bars > 0 )  limit=Bars-counted_bars;
    if ( counted_bars < 0 )  return(0);
    if ( counted_bars ==0 )  limit=Bars-Len-1; 
@@ -143,9 +146,7 @@ void CheckForOpen()
 //+------------------------------------------------------------------+
 void start()
   {
-//---- check for history and trading
-   if(Bars<100 || IsTradeAllowed()==false) return;
-//---- calculate open orders by current symbol
+      
  //  if(CalculateCurrentOrders(Symbol())==0) 
    CheckForOpen();
  
