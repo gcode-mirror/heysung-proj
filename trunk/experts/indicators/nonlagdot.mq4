@@ -20,11 +20,11 @@
 
 //---- input parameters
 extern int     Price          = 0;
-extern int     Length         = 60;
+extern int     Length         = 10;
 extern int     Displace       = 0;
-extern int     Filter         = 5;
+extern int     Filter         = 0;
 extern int     Color          = 1;
-extern int     ColorBarBack   = 0;
+extern int     ColorBarBack   = 2;
 extern double  Deviation      = 0;         
 
 double Cycle =  4;
@@ -102,7 +102,7 @@ int start()
    
    for(shift=limit;shift>=0;shift--) 
    {	
-      Weight=0; Sum=0; t=0;
+   Weight=0; Sum=0; t=0;
        
       for (i=0;i<=Len-1;i++)
 	   { 
@@ -123,7 +123,7 @@ int start()
    
       if (Filter>0)
       {
-         if( MathAbs(MABuffer[shift]-MABuffer[shift+1]) < Filter*Point ) MABuffer[shift]=MABuffer[shift+1];
+      if( MathAbs(MABuffer[shift]-MABuffer[shift+1]) < Filter*Point ) MABuffer[shift]=MABuffer[shift+1];
       }
       
       if (Color>0)
