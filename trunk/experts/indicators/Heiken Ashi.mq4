@@ -1,33 +1,20 @@
 //+------------------------------------------------------------------+
-//|                                                  Heiken Ashi.mq4 |
-//|                      Copyright c 2004, MetaQuotes Software Corp. |
-//|                                        http://www.metaquotes.net |
+//|                                               Heiken Ashi Ma.mq4 |
 //+------------------------------------------------------------------+
-//| For Heiken Ashi we recommend next chart settings ( press F8 or   |
-//| select on menu 'Charts'->'Properties...'):                       |
-//|  - On 'Color' Tab select 'Black' for 'Line Graph'                |
-//|  - On 'Common' Tab disable 'Chart on Foreground' checkbox and    |
-//|    select 'Line Chart' radiobutton                               |
+//|                                                      mod by Raff |
 //+------------------------------------------------------------------+
-#property copyright "Copyright © 2004, MetaQuotes Software Corp."
-#property link      "http://www.metaquotes.net"
+#property copyright "Copyright © 2006, Forex-TSD.com "
+#property link      "http://www.forex-tsd.com/"
 
 #property indicator_chart_window
 #property indicator_buffers 4
 #property indicator_color1 Red
-#property indicator_color2 White
+#property indicator_color2 RoyalBlue
 #property indicator_color3 Red
-#property indicator_color4 White
-#property indicator_width1 1
-#property indicator_width2 1
-#property indicator_width3 3
-#property indicator_width4 3
-
-//----
-extern color color1 = Red;
-extern color color2 = White;
-extern color color3 = Red;
-extern color color4 = White;
+#property indicator_color4 RoyalBlue
+//---- parameters
+extern int MaMetod  = 1;
+extern int MaPeriod = 15;
 //---- buffers
 double ExtMapBuffer1[];
 double ExtMapBuffer2[];
@@ -41,19 +28,16 @@ int ExtCountedBars=0;
 int init()
   {
 //---- indicators
-   SetIndexStyle(0,DRAW_HISTOGRAM, 0, 1, color1);
+   SetIndexStyle(0,DRAW_HISTOGRAM, 0, 3, Red);
    SetIndexBuffer(0, ExtMapBuffer1);
-   SetIndexStyle(1,DRAW_HISTOGRAM, 0, 1, color2);
+   SetIndexStyle(1,DRAW_HISTOGRAM, 0, 3, RoyalBlue);
    SetIndexBuffer(1, ExtMapBuffer2);
-   SetIndexStyle(2,DRAW_HISTOGRAM, 0, 3, color3);
+   SetIndexStyle(2,DRAW_HISTOGRAM, 0, 3, Red);
    SetIndexBuffer(2, ExtMapBuffer3);
-   SetIndexStyle(3,DRAW_HISTOGRAM, 0, 3, color4);
+   SetIndexStyle(3,DRAW_HISTOGRAM, 0, 3, RoyalBlue);
    SetIndexBuffer(3, ExtMapBuffer4);
 //----
-   SetIndexDrawBegin(0,10);
-   SetIndexDrawBegin(1,10);
-   SetIndexDrawBegin(2,10);
-   SetIndexDrawBegin(3,10);
+   SetIndexDrawBegin(0,5);
 //---- indicator buffers mapping
    SetIndexBuffer(0,ExtMapBuffer1);
    SetIndexBuffer(1,ExtMapBuffer2);
@@ -63,7 +47,7 @@ int init()
    return(0);
   }
 //+------------------------------------------------------------------+
-//| Custom indicator deinitialization function                       |
+//| Custor indicator deinitialization function                       |
 //+------------------------------------------------------------------+
 int deinit()
   {
@@ -77,6 +61,7 @@ int deinit()
 //+------------------------------------------------------------------+
 int start()
   {
+   double maOpen, maClose, maLow, maHigh;
    double haOpen, haHigh, haLow, haClose;
    if(Bars<=10) return(0);
    ExtCountedBars=IndicatorCounted();
@@ -87,10 +72,15 @@ int start()
    int pos=Bars-ExtCountedBars-1;
    while(pos>=0)
      {
+      maOpen=iMA(NULL,0,MaPeriod,0,MaMetod,MODE_OPEN,pos);
+      maClose=iMA(NULL,0,MaPeriod,0,MaMetod,MODE_CLOSE,pos);
+      maLow=iMA(NULL,0,MaPeriod,0,MaMetod,MODE_LOW,pos);
+      maHigh=iMA(NULL,0,MaPeriod,0,MaMetod,MODE_HIGH,pos);
+
       haOpen=(ExtMapBuffer3[pos+1]+ExtMapBuffer4[pos+1])/2;
-      haClose=(Open[pos]+High[pos]+Low[pos]+Close[pos])/4;
-      haHigh=MathMax(High[pos], MathMax(haOpen, haClose));
-      haLow=MathMin(Low[pos], MathMin(haOpen, haClose));
+      haClose=(maOpen+maHigh+maLow+maClose)/4;
+      haHigh=MathMax(maHigh, MathMax(haOpen, haClose));
+      haLow=MathMin(maLow, MathMin(haOpen, haClose));
       if (haOpen<haClose) 
         {
          ExtMapBuffer1[pos]=haLow;
