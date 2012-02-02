@@ -19,10 +19,10 @@
 double     MA_Buffer0[];
 double     Ch1up_Buffer1[];
 double     Ch1dn_Buffer2[];
-//double     Ch2up_Buffer3[];
-//double     Ch2dn_Buffer4[];
-//double     Ch3up_Buffer5[];
-//double     Ch3dn_Buffer6[];
+double     Ch2up_Buffer3[];
+double     Ch2dn_Buffer4[];
+double     Ch3up_Buffer5[];
+double     Ch3dn_Buffer6[];
 
 //---- input parameters
 extern int       PeriodsATR=18;
@@ -63,7 +63,6 @@ int init()
    SetIndexDrawBegin(2,0);
    SetIndexLabel(2,"ATRd "+PeriodsATR+", "+Mult_Factor1);
 // ATR 2 up
-/*
    SetIndexStyle(3,DRAW_LINE);
    SetIndexBuffer(3,Ch2up_Buffer3);
    SetIndexDrawBegin(3,0);
@@ -84,7 +83,6 @@ int init()
    SetIndexDrawBegin(6,0);
    SetIndexLabel(6,"ATRd "+PeriodsATR+", "+Mult_Factor3);
 //----
-*/
    return(0);
   }
 //+------------------------------------------------------------------+
@@ -107,27 +105,15 @@ int start()
          double atr=iATR(NULL,0,PeriodsATR,i);
          double ma=iMA(NULL,0,MA_Periods,0,MA_type,PRICE_TYPICAL,i);
          MA_Buffer0[i]=ma;
-
          Ch1up_Buffer1[i]=ma+atr*Mult_Factor1;
          Ch1dn_Buffer2[i]=ma-atr*Mult_Factor1;
          
- //        Ch2up_Buffer3[i]=ma+atr*Mult_Factor2;
- //        Ch2dn_Buffer4[i]=ma-atr*Mult_Factor2;
+         Ch2up_Buffer3[i]=ma+atr*Mult_Factor2;
+         Ch2dn_Buffer4[i]=ma-atr*Mult_Factor2;
          
- //        Ch3up_Buffer5[i]=ma+atr*Mult_Factor3;
- //        Ch3dn_Buffer6[i]=ma-atr*Mult_Factor3;
-
-/*         Ch1up_Buffer1[i]=atr*Mult_Factor1;
-         Ch1dn_Buffer2[i]=atr*Mult_Factor1;
-         
-         Ch2up_Buffer3[i]=atr*Mult_Factor2;
-         Ch2dn_Buffer4[i]=atr*Mult_Factor2;
-         
-         Ch3up_Buffer5[i]=atr*Mult_Factor3;
-         Ch3dn_Buffer6[i]=atr*Mult_Factor3;
- */
+         Ch3up_Buffer5[i]=ma+atr*Mult_Factor3;
+         Ch3dn_Buffer6[i]=ma-atr*Mult_Factor3;
       }  
-      
    
 //---- 
    
