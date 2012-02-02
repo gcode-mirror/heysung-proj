@@ -20,6 +20,8 @@ extern double  Deviation      = 0;
 
 bool       bEntry=False;
 double      Cycle =  4;
+int      handle=-1;
+
 //+------------------------------------------------------------------+
 //| Calculate open positions                                         |
 //+------------------------------------------------------------------+
@@ -82,12 +84,14 @@ void CheckForOpen()
    double Coeff =  3*pi;
    int Phase = Length-1;
    double Len = Length*Cycle + Phase;  
+       FileWriteInteger(handle,shift);
+
    
-   if (CountBars>=158) CountBars=158;
+//   if (CountBars>=158) CountBars=158;
    
-   if ( counted_bars > 0 )  limit=Bars-counted_bars;
+   if ( counted_bars > 0 )  limit=CountBars-counted_bars;
    if ( counted_bars < 0 )  return(0);
-   if ( counted_bars ==0 )  limit=Bars-Len-1; 
+   if ( counted_bars ==0 )  limit=CountBars-Len-1; 
    if ( counted_bars < 1 ) 
    {
   
@@ -98,6 +102,7 @@ void CheckForOpen()
       trend_shift1=iCustom(NULL,0,"nonlagdot",Price,Length,Displace,Filter,Color,ColorBarBack,Deviation,1,i+1);
       trend_shift2=iCustom(NULL,0,"nonlagdot",Price,Length,Displace,Filter,Color,ColorBarBack,Deviation,2,i+2);
       
+      FileWriteInteger(handle,shift);
       if( trend_shift2<0 && trend_shift1>0 )
       {
 	     //   Message = " "+Symbol()+" M"+Period()+": Signal for BUY";
@@ -146,10 +151,18 @@ void CheckForOpen()
 //+------------------------------------------------------------------+
 void start()
   {
-      
+     handle=FileOpen("mydata",FILE_BIN|FILE_WRITE);
+   if(handle<1) 
+   {
+      Print("can't find file!",GetLastError());
+      return (false);
+   }
  //  if(CalculateCurrentOrders(Symbol())==0) 
    CheckForOpen();
- 
+   
+    FileFlush(handle);  
+    FileClose(handle);
+
 
   }
 //+------------------------------------------------------------------+
