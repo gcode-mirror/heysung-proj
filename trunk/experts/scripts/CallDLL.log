@@ -1,0 +1,7 @@
+1;41;D:\Program Files\MBT MetaTrader 4\experts\scripts\CallDLL.mq4;11:1;'enum' - expression on global scope not allowed
+2;75;D:\Program Files\MBT MetaTrader 4\experts\scripts\CallDLL.mq4;11:1;'enum' - variable not defined
+1;41;D:\Program Files\MBT MetaTrader 4\experts\scripts\CallDLL.mq4;11:6;'tt' - expression on global scope not allowed
+2;75;D:\Program Files\MBT MetaTrader 4\experts\scripts\CallDLL.mq4;11:6;'tt' - variable not defined
+1;41;D:\Program Files\MBT MetaTrader 4\experts\scripts\CallDLL.mq4;11:8;'{' - expression on global scope not allowed
+2;75;D:\Program Files\MBT MetaTrader 4\experts\scripts\CallDLL.mq4;11:9;'er' - variable not defined
+2;75;D:\Program Files\MBT MetaTrader 4\experts\scripts\CallDLL.mq4;11:12;'ere' - variable not defined
