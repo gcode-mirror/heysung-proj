@@ -78,18 +78,20 @@ void CheckForOpen()
    int    res;
    
    int    i,shift, counted_bars=IndicatorCounted(),limit;
+   Print("error is " ,GetLastError());
    double alfa, beta, t, Sum, Weight, step,g;
    double pi = 3.1415926535;
 
    double Coeff =  3*pi;
    int Phase = Length-1;
-   double Len = Length*Cycle + Phase;  
-       FileWriteInteger(handle,shift);
-
-   
+   double Len = Length*Cycle + Phase;
+     
+   FileWriteInteger(handle,shift);
+    Print("current is 3");
 //   if (CountBars>=158) CountBars=158;
    
    if ( counted_bars > 0 )  limit=CountBars-counted_bars;
+    Print("counted_bars is ",counted_bars);
    if ( counted_bars < 0 )  return(0);
    if ( counted_bars ==0 )  limit=CountBars-Len-1; 
    if ( counted_bars < 1 ) 
@@ -103,6 +105,7 @@ void CheckForOpen()
       trend_shift2=iCustom(NULL,0,"nonlagdot",Price,Length,Displace,Filter,Color,ColorBarBack,Deviation,2,i+2);
       
       FileWriteInteger(handle,shift);
+       Print("current is 4");
       if( trend_shift2<0 && trend_shift1>0 )
       {
 	     //   Message = " "+Symbol()+" M"+Period()+": Signal for BUY";
@@ -157,6 +160,8 @@ void start()
       Print("can't find file!",GetLastError());
       return (false);
    }
+   FileWriteInteger(handle,1);
+   Print("current is 2");
  //  if(CalculateCurrentOrders(Symbol())==0) 
    CheckForOpen();
    
