@@ -11,9 +11,9 @@ extern double DecreaseFactor     = 3;
 //input parameters for custom indicator nonlagdat.ex4
 extern int     CountBars      =158;
 extern int     Price          = 0;
-extern int     Length         = 5;
+extern int     Length         = 60;
 extern int     Displace       = 0;
-extern int     Filter         = 0;
+extern int     Filter         = 5;
 extern int     Color          = 1;
 extern int     ColorBarBack   = 0;
 extern double  Deviation      = 0;    
@@ -77,7 +77,8 @@ double LotsOptimized()
 //+------------------------------------------------------------------+
 void CheckForOpen()
   {
-   double trend_shift1,trend_shift2;
+   double uptrend_shift1,uptrend_shift2;
+   double dntrend_shift1,dntrend_shift2;
    int    res;
    
    int    i,shift, counted_bars,limit;
@@ -91,15 +92,18 @@ void CheckForOpen()
      
    
    
-      trend_shift1=iCustom(NULL,0,"nonlagdot",Price,Length,Displace,Filter,Color,ColorBarBack,Deviation,1,1);
-      trend_shift2=iCustom(NULL,0,"nonlagdot",Price,Length,Displace,Filter,Color,ColorBarBack,Deviation,2,2);
+      uptrend_shift1=iCustom(NULL,0,"nonlagdot",Price,Length,Displace,Filter,Color,ColorBarBack,Deviation,1,1);
+      uptrend_shift2=iCustom(NULL,0,"nonlagdot",Price,Length,Displace,Filter,Color,ColorBarBack,Deviation,1,2);
       
+      dntrend_shift1=iCustom(NULL,0,"nonlagdot",Price,Length,Displace,Filter,Color,ColorBarBack,Deviation,2,1);
+      dntrend_shift2=iCustom(NULL,0,"nonlagdot",Price,Length,Displace,Filter,Color,ColorBarBack,Deviation,2,2);
       
+      FileSeek(handle,0,SEEK_END);
       FileWrite(handle,TimeToStr(TimeCurrent(),TIME_DATE|TIME_SECONDS),TimeToStr(TimeLocal(),TIME_DATE|TIME_SECONDS),
-                trend_shift1,trend_shift2);
+                uptrend_shift1,uptrend_shift2,dntrend_shift1,dntrend_shift2);
      
 
-      if( trend_shift2<0 && trend_shift1>0 )
+      if( dntrend_shift1==EMPTY_VALUE&&dntrend_shift2!=EMPTY_VALUE )
       {
 	     //   Message = " "+Symbol()+" M"+Period()+": Signal for BUY";
 	     //   if ( SoundAlertMode>0 ) Alert (Message); 
@@ -110,16 +114,20 @@ void CheckForOpen()
             if(OrderMagicNumber()!=MAGICMA || OrderSymbol()!=Symbol()) continue;
     
          }
-         if(bEntry&&(OrderType()==OP_SELL))
+         if(bEntry&&OrderType()==OP_SELL)
          {
             OrderClose(OrderTicket(),OrderLots(),Bid,3,White);
+            bEntry=False;
          }
-         res=OrderSend(Symbol(),OP_BUY,1,Ask,3,0,0,"",MAGICMA,0,Blue);
+         if(!bEntry)
+         {
+            res=OrderSend(Symbol(),OP_BUY,1,Ask,3,0,0,"",MAGICMA,0,Blue);
+         }
          bEntry=true;
          return;
 	   } 
 	   
-      if( trend_shift2>0 && trend_shift1<0 )
+      if( uptrend_shift1==EMPTY_VALUE&&uptrend_shift2!=EMPTY_VALUE )
       {
          for( i=0;i<OrdersTotal();i++)
          {
@@ -127,12 +135,15 @@ void CheckForOpen()
             if(OrderMagicNumber()!=MAGICMA || OrderSymbol()!=Symbol()) continue;
          }
             
-         if(bEntry&&(OrderType()==OP_BUY))
+         if(bEntry&&OrderType()==OP_BUY)
          {
             OrderClose(OrderTicket(),OrderLots(),Bid,3,White);
+             bEntry=False;
          }
-            
+         if(!bEntry)   
+         {
          res=OrderSend(Symbol(),OP_SELL,1,Bid,3,0,0,"",MAGICMA,0,Red);
+         }
          bEntry=true;
          return;
       } 	         
