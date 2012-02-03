@@ -71,12 +71,14 @@ void CheckForOpen()
 //---- sell conditions
    if(Open[1]>ma && Close[1]<ma)  
      {
+      Print("the open is ",Open[0],"close is ",Close[1]);
       res=OrderSend(Symbol(),OP_SELL,LotsOptimized(),Bid,3,0,0,"",MAGICMA,0,Red);
       return;
      }
 //---- buy conditions
    if(Open[1]<ma && Close[1]>ma)  
      {
+      Print("the open is ",Open[0],"close is ",Close[1]);
       res=OrderSend(Symbol(),OP_BUY,LotsOptimized(),Ask,3,0,0,"",MAGICMA,0,Blue);
       return;
      }

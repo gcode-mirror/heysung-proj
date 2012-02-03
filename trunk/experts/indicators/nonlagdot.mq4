@@ -145,6 +145,7 @@ int start()
          }
       }
    }
+   Print("the UpBuffer is ",UpBuffer[shift+1],", DnBuffer is ",DnBuffer[shift+1]);
 	return(0);	
 }
 

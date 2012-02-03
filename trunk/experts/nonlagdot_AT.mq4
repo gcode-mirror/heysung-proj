@@ -11,9 +11,9 @@ extern double DecreaseFactor     = 3;
 //input parameters for custom indicator nonlagdat.ex4
 extern int     CountBars      =158;
 extern int     Price          = 0;
-extern int     Length         = 60;
+extern int     Length         = 5;
 extern int     Displace       = 0;
-extern int     Filter         = 5;
+extern int     Filter         = 0;
 extern int     Color          = 1;
 extern int     ColorBarBack   = 0;
 extern double  Deviation      = 0;    
@@ -25,6 +25,9 @@ int      handle=-1;
 //+------------------------------------------------------------------+
 //| Calculate open positions                                         |
 //+------------------------------------------------------------------+
+int PrintLog(int _handle)
+{
+}
 int CalculateCurrentOrders(string symbol)
   {
    int buys=0,sells=0;
@@ -77,7 +80,7 @@ void CheckForOpen()
    double trend_shift1,trend_shift2;
    int    res;
    
-   int    i,shift, counted_bars=IndicatorCounted(),limit;
+   int    i,shift, counted_bars,limit;
    Print("error is " ,GetLastError());
    double alfa, beta, t, Sum, Weight, step,g;
    double pi = 3.1415926535;
@@ -86,26 +89,16 @@ void CheckForOpen()
    int Phase = Length-1;
    double Len = Length*Cycle + Phase;
      
-   FileWriteInteger(handle,shift);
-    Print("current is 3");
-//   if (CountBars>=158) CountBars=158;
    
-   if ( counted_bars > 0 )  limit=CountBars-counted_bars;
-    Print("counted_bars is ",counted_bars);
-   if ( counted_bars < 0 )  return(0);
-   if ( counted_bars ==0 )  limit=CountBars-Len-1; 
-   if ( counted_bars < 1 ) 
-   {
-  
-   }
    
-   for(shift=limit;shift>=0;shift--) 
-   {	
-      trend_shift1=iCustom(NULL,0,"nonlagdot",Price,Length,Displace,Filter,Color,ColorBarBack,Deviation,1,i+1);
-      trend_shift2=iCustom(NULL,0,"nonlagdot",Price,Length,Displace,Filter,Color,ColorBarBack,Deviation,2,i+2);
+      trend_shift1=iCustom(NULL,0,"nonlagdot",Price,Length,Displace,Filter,Color,ColorBarBack,Deviation,1,1);
+      trend_shift2=iCustom(NULL,0,"nonlagdot",Price,Length,Displace,Filter,Color,ColorBarBack,Deviation,2,2);
       
-      FileWriteInteger(handle,shift);
-       Print("current is 4");
+      
+      FileWrite(handle,TimeToStr(TimeCurrent(),TIME_DATE|TIME_SECONDS),TimeToStr(TimeLocal(),TIME_DATE|TIME_SECONDS),
+                trend_shift1,trend_shift2);
+     
+
       if( trend_shift2<0 && trend_shift1>0 )
       {
 	     //   Message = " "+Symbol()+" M"+Period()+": Signal for BUY";
@@ -143,7 +136,7 @@ void CheckForOpen()
          bEntry=true;
          return;
       } 	         
-   }
+   
 }
 //+------------------------------------------------------------------+
 //| Check for close order conditions                                 |
@@ -154,13 +147,13 @@ void CheckForOpen()
 //+------------------------------------------------------------------+
 void start()
   {
-     handle=FileOpen("mydata",FILE_BIN|FILE_WRITE);
+     handle=FileOpen("mydata.txt",FILE_CSV|FILE_READ|FILE_WRITE,",");
    if(handle<1) 
    {
       Print("can't find file!",GetLastError());
       return (false);
    }
-   FileWriteInteger(handle,1);
+   FileWrite(handle,1,2,3);
    Print("current is 2");
  //  if(CalculateCurrentOrders(Symbol())==0) 
    CheckForOpen();
