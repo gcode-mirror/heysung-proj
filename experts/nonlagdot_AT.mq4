@@ -102,8 +102,8 @@ void CheckForOpen()
       FileWrite(handle,TimeToStr(TimeCurrent(),TIME_DATE|TIME_SECONDS),TimeToStr(TimeLocal(),TIME_DATE|TIME_SECONDS),
                 uptrend_shift1,uptrend_shift2,dntrend_shift1,dntrend_shift2);
      
-
-      if( dntrend_shift1==EMPTY_VALUE&&dntrend_shift2!=EMPTY_VALUE )
+      if( uptrend_shift1==EMPTY_VALUE&&uptrend_shift2!=EMPTY_VALUE )
+//      if( dntrend_shift1==EMPTY_VALUE&&dntrend_shift2!=EMPTY_VALUE )
       {
 	     //   Message = " "+Symbol()+" M"+Period()+": Signal for BUY";
 	     //   if ( SoundAlertMode>0 ) Alert (Message); 
@@ -116,18 +116,19 @@ void CheckForOpen()
          }
          if(bEntry&&OrderType()==OP_SELL)
          {
-            OrderClose(OrderTicket(),OrderLots(),Bid,3,White);
+            OrderClose(OrderTicket(),OrderLots(),Ask,1,White);
             bEntry=False;
          }
          if(!bEntry)
          {
-            res=OrderSend(Symbol(),OP_BUY,1,Ask,3,0,0,"",MAGICMA,0,Blue);
+            res=OrderSend(Symbol(),OP_BUY,1,Ask,1,0,0,"",MAGICMA,0,Blue);
          }
          bEntry=true;
          return;
 	   } 
 	   
-      if( uptrend_shift1==EMPTY_VALUE&&uptrend_shift2!=EMPTY_VALUE )
+	   if( dntrend_shift1==EMPTY_VALUE&&dntrend_shift2!=EMPTY_VALUE )
+//      if( uptrend_shift1==EMPTY_VALUE&&uptrend_shift2!=EMPTY_VALUE )
       {
          for( i=0;i<OrdersTotal();i++)
          {
@@ -137,12 +138,12 @@ void CheckForOpen()
             
          if(bEntry&&OrderType()==OP_BUY)
          {
-            OrderClose(OrderTicket(),OrderLots(),Bid,3,White);
+            OrderClose(OrderTicket(),OrderLots(),Bid,1,White);
              bEntry=False;
          }
          if(!bEntry)   
          {
-         res=OrderSend(Symbol(),OP_SELL,1,Bid,3,0,0,"",MAGICMA,0,Red);
+         res=OrderSend(Symbol(),OP_SELL,1,Bid,1,0,0,"",MAGICMA,0,Red);
          }
          bEntry=true;
          return;
