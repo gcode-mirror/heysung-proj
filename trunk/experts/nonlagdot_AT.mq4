@@ -20,7 +20,7 @@ extern double  Deviation      = 0;
 
 bool       bEntry=False;
 double      Cycle =  4;
-int      handle=-1;
+int         handle=-1;
 
 //+------------------------------------------------------------------+
 //| Calculate open positions                                         |
